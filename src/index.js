@@ -63,6 +63,46 @@ function hashMap() {
                 else currentElement = currentElement.nextNode;
             }
             return null;
+        },
+        has: function(key){
+            //takes a key as an argument and returns true or false based on whether or not the key is in the hash map.
+
+            let hashedKey = this.hash(key);
+            let currentElement = this.table[hashedKey];
+            while (currentElement != null) {
+                if (currentElement.keyName === key) return true;
+                else currentElement = currentElement.nextNode;
+            }
+            return false;
+        },
+        remove: function(key) {
+            // takes a key as an argument. If the given key is in the hash map, it should
+            // remove the entry with that key and return true. If the key isn’t in the hash map, it should return false.
+
+            let hashedKey = this.hash(key);
+            let currentElement = this.table[hashedKey];
+            let nextNode = null;
+
+            //checks if the key to be removed is the first in the list (if its a head)
+            if (currentElement.keyName === key) {
+                //if it is a head, it gets the next node and sets the head to that node
+                nextNode = currentElement.nextNode;
+                this.table[hashedKey] = nextNode;
+                return true;
+            };
+
+            //else if the key to be removed is not the first in the list,
+            //it finds it and replaces it with its nextNode
+            while (currentElement != null) {
+                if (currentElement.nextNode.keyName === key) {
+                    nextNode = currentElement.nextNode.nextNode;
+                    currentElement.nextNode = nextNode;
+                    return true;
+                } else currentElement = currentElement.nextNode;
+            };
+
+            //if its not found, returns false
+            return false;
         }
     }
 }
@@ -76,6 +116,3 @@ nameList.set('laCaraabde', 9)
 nameList.set('UgaBuga', 5)
 nameList.set('losmi', 29)
 console.log(nameList.table)
-console.log(nameList.get('losmi'))
-console.log(nameList.get('UgaBuga'))
-console.log(nameList.get('MalaMaca'))
