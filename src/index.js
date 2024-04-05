@@ -44,13 +44,25 @@ function hashMap() {
                         tempNode = tempNode.nextNode;
                     }
                     tempNode.nextNode = element;
-                    
+
                 //else if the existing key matches with the current one,
                 //replace the existing value with the current value
                 } else this.table[hashedKey].value = value;
 
             //if there isn't an element at this index,create it
             } else this.table[hashedKey] = element;
+        },
+        get: function(key){
+            //takes one argument as a key and returns the value that
+            //is assigned to this key. If a key is not found, return null.
+            
+            let hashedKey = this.hash(key);
+            let currentElement = this.table[hashedKey];
+            while (currentElement != null) {
+                if (currentElement.keyName === key) return currentElement.value;
+                else currentElement = currentElement.nextNode;
+            }
+            return null;
         }
     }
 }
@@ -64,3 +76,6 @@ nameList.set('laCaraabde', 9)
 nameList.set('UgaBuga', 5)
 nameList.set('losmi', 29)
 console.log(nameList.table)
+console.log(nameList.get('losmi'))
+console.log(nameList.get('UgaBuga'))
+console.log(nameList.get('MalaMaca'))
