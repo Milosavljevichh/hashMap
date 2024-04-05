@@ -24,19 +24,32 @@ function hashMap() {
         },
         //If a key already exists, then the old value is overwritten
         set: function(key,value) {
-            //we should get the key from hash function
+
+            //we should get the hashedKey from hash function\
+            //hashKey represents the index of the table, in which the created
+            //element will go
             let hashedKey = this.hash(key);
+
+            //we create our element, giving it a key, a value and the next node
+            //placeholder which will resolve collision if collision happens
             let element = Node(key, value, null);
-            
+
+            //if theres and element at this index, check if the keys match
             if (this.table[hashedKey]) {
+                //if the existing key doesn't match with the current one, 
+                //link the current element to the existing elements nextNode
                 if (this.table[hashedKey].keyName !== key) {
                     let tempNode = this.table[hashedKey];
                     while (tempNode.nextNode !== null) {
                         tempNode = tempNode.nextNode;
                     }
                     tempNode.nextNode = element;
-
+                    
+                //else if the existing key matches with the current one,
+                //replace the existing value with the current value
                 } else this.table[hashedKey].value = value;
+
+            //if there isn't an element at this index,create it
             } else this.table[hashedKey] = element;
         }
     }
