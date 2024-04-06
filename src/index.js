@@ -103,6 +103,27 @@ function hashMap() {
 
             //if its not found, returns false
             return false;
+        },
+        length: function(){
+            let list = this.table;
+            let totalKeys = 0;
+
+            //we loop through every bucket in the list
+            for (let element in list) {
+
+                //we're checking if the bucket isn't empty, then
+                //increasing the total number of keys
+                if (list[element].keyName != null) totalKeys++;
+
+                //we get the next node and while it isn't null,
+                //we increase the total number of keys and get the next nodes next node
+                let nextNode = list[element].nextNode;
+                while (nextNode != null) {
+                    totalKeys++;
+                    nextNode = nextNode.nextNode;
+                }
+              }
+              return totalKeys;
         }
     }
 }
@@ -116,3 +137,4 @@ nameList.set('laCaraabde', 9)
 nameList.set('UgaBuga', 5)
 nameList.set('losmi', 29)
 console.log(nameList.table)
+ console.log(nameList.length())
