@@ -1,3 +1,5 @@
+
+
 //for this project, we only handle keys of type string
 function Node(key, value, nextNode) {
     return {
@@ -10,6 +12,9 @@ function Node(key, value, nextNode) {
 function hashMap() {
     return {
         table: {},
+        capacity: 16, //total number of buckets
+        loadFactor: 0.75, //determines when to grow number of buckets
+        size: 0,
         //takes a key and produces a hash code with it
         hash: function(key) {
             let hashCode = 0;
@@ -17,7 +22,7 @@ function hashMap() {
             const primeNumber = 31;
             for (let i = 0; i < key.length; i++) {
               hashCode = primeNumber * hashCode + key.charCodeAt(i);
-              hashCode %= 16;
+              hashCode %= this.capacity;
             }
          
             return hashCode;
@@ -50,7 +55,30 @@ function hashMap() {
                 } else this.table[hashedKey].value = value;
 
             //if there isn't an element at this index,create it
-            } else this.table[hashedKey] = element;
+            } else {
+                this.table[hashedKey] = element;
+                this.size++;
+                console.log(this.size)
+            } 
+
+            //check capacity
+            if (this.size > this.capacity * this.loadFactor) {
+                this.resize(this.capacity * 2);
+            }
+        },
+        resize: function(newCapacity) {
+            let oldTable = this.table;
+            this.capacity = newCapacity;
+            this.table = {};
+            this.size = 0;
+        
+            for (let key in oldTable) {
+                let currentNode = oldTable[key];
+                while (currentNode) {
+                    this.set(currentNode.keyName, currentNode.value); // Rehash elements into new table
+                    currentNode = currentNode.nextNode;
+                }
+            }
         },
         get: function(key){
             //takes one argument as a key and returns the value that
@@ -104,7 +132,7 @@ function hashMap() {
             //if its not found, returns false
             return false;
         },
-        length: function(){
+        length: function(){ //returns the number of stored keys in the hash map.
             let list = this.table;
             let totalKeys = 0;
 
@@ -124,6 +152,68 @@ function hashMap() {
                 }
               }
               return totalKeys;
+        },
+        clear: function() { //removes all entries in the hash map.
+            this.table = {};
+        },
+        keys: function() { //returns an array containing all the keys inside the hash map.
+            //similar to length function
+            let list = this.table;
+            let keysArr = [];
+
+            for (let element in list) {
+                keysArr.push(list[element].keyName);
+
+                let nextNode = list[element].nextNode;
+                while (nextNode != null) {
+                    keysArr.push(nextNode.keyName);
+                    nextNode = nextNode.nextNode;
+                }
+              }
+              return keysArr;
+        },
+        values: function(){//returns an array containing all the values.
+            let list = this.table;
+            let valuesArr = [];
+
+            for (let element in list) {
+                valuesArr.push(list[element].value);
+
+                let nextNode = list[element].nextNode;
+                while (nextNode != null) {
+                    valuesArr.push(nextNode.value);
+                    nextNode = nextNode.nextNode;
+                }
+              }
+              return valuesArr;
+        },
+        entries: function(){//returns an array that contains each key, value pair
+            let list = this.table;
+            let entriesArr = [];
+
+            for (let element in list) {
+
+                //for every bucket creates a pair array
+                let pairArr = [];
+                
+                //pushes the heads keyName and value into that array,
+                //creating a pair which is added to the main arr
+                pairArr.push(list[element].keyName);
+                pairArr.push(list[element].value);
+                entriesArr.push(pairArr);
+
+                let nextNode = list[element].nextNode;
+                while (nextNode != null) {
+                    //we reset the pair array, since we already pushed our last pair to the main array
+                    pairArr = [];
+                    pairArr.push(nextNode.keyName);
+                    pairArr.push(nextNode.value);
+                    entriesArr.push(pairArr);
+                    nextNode = nextNode.nextNode;
+                }
+            }
+
+            return entriesArr;
         }
     }
 }
@@ -138,3 +228,8 @@ nameList.set('UgaBuga', 5)
 nameList.set('losmi', 29)
 console.log(nameList.table)
  console.log(nameList.length())
+ console.log(nameList.keys())
+ console.log(nameList.values())
+ console.log(nameList.entries())
+ nameList.set('Paskas', 29)
+ console.log(nameList.table)
